@@ -1,401 +1,57 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#fbefe8" />
-  <title>Personal Workbench — Khoi</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --paper: #fbefe8;
-      --paper-deep: #f8e9e1;
-      --surface: rgba(255, 252, 249, .86);
-      --surface-strong: #fffaf7;
-      --ink: #332b28;
-      --muted: #8d7d75;
-      --line: #eee1da;
-      --accent: #e99362;
-      --accent-dark: #bd6844;
-      --accent-soft: #f8e3d5;
-      --green: #638572;
-      --shadow: 0 14px 40px rgba(107, 71, 53, .055);
-      --radius: 22px;
-      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 86% 8%, rgba(255,255,255,.55), transparent 34%),
-        linear-gradient(145deg, #fcf1eb 0%, var(--paper) 55%, #f8ebe5 100%);
-      color: var(--ink);
-    }
-    button, input { font: inherit; }
-    button { color: inherit; }
-    a { color: inherit; text-decoration: none; }
-
-    .app-shell { min-height: 100vh; }
-    .sidebar {
-      position: fixed;
-      z-index: 5;
-      inset: 16px auto 16px 16px;
-      width: 148px;
-      padding: 20px 12px;
-      border: 1px solid rgba(255,255,255,.62);
-      border-radius: 24px;
-      background: rgba(255, 250, 247, .76);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
-      backdrop-filter: blur(14px);
-    }
-    .brand { padding: 2px 8px 18px; font-size: 13px; font-weight: 750; letter-spacing: -.02em; }
-    .brand-mark {
-      display: inline-grid; place-items: center; width: 25px; height: 25px; margin-right: 6px;
-      border-radius: 9px; background: var(--accent-soft); color: var(--accent-dark); font-size: 13px;
-    }
-    .nav-label { padding: 13px 9px 7px; color: #ad9b91; text-transform: uppercase; letter-spacing: .09em; font-size: 9px; font-weight: 750; }
-    .nav-list { display: grid; gap: 4px; }
-    .nav-link {
-      display: flex; align-items: center; gap: 9px; min-height: 34px; padding: 7px 9px;
-      border-radius: 11px; color: #7f7069; font-size: 11px; transition: .18s ease;
-    }
-    .nav-link:hover, .nav-link.active { background: #fff; color: var(--accent-dark); }
-    .nav-icon { width: 15px; text-align: center; font-size: 13px; }
-    .nav-divider { height: 1px; margin: 12px 6px 4px; background: var(--line); }
-    .sidebar-bottom { margin-top: auto; padding: 12px 8px 2px; color: #a28f86; font-size: 9px; line-height: 1.5; }
-    .profile-dot { display: inline-grid; place-items: center; width: 25px; height: 25px; margin-bottom: 7px; border-radius: 50%; background: #f0cdb8; color: #794e3b; font-weight: 750; }
-
-    main { width: min(1200px, calc(100% - 196px)); margin: 0 auto 0 max(184px, calc((100% - 1200px) / 2 + 164px)); padding: 28px 28px 52px; }
-    .topline { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; }
-    .top-actions { display: flex; align-items: center; gap: 15px; }
-    .icon-button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 11px; }
-    .avatar { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #fff; font-weight: 700; color: var(--accent-dark); }
-    .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin: 30px 0 22px; }
-    h1 { margin: 0; font-size: clamp(34px, 5vw, 48px); line-height: 1.08; letter-spacing: -.055em; font-weight: 760; }
-    .hero p { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
-    .focus-card { min-width: 210px; padding: 15px 18px; border: 1px solid rgba(255,255,255,.8); border-radius: 18px; background: rgba(255,255,255,.62); }
-    .focus-card strong { display: block; font-size: 15px; }
-    .focus-card span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
-
-    .quickbar { display: flex; align-items: center; gap: 10px; padding: 8px 9px 8px 17px; border: 1px solid rgba(255,255,255,.84); border-radius: 15px; background: rgba(255,255,255,.66); box-shadow: 0 6px 22px rgba(107,71,53,.035); }
-    .quickbar input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; }
-    .quickbar input::placeholder { color: #a7968d; }
-    .quick-actions { display: flex; gap: 5px; }
-    .quick-action { border: 0; border-radius: 9px; background: transparent; padding: 8px 9px; color: #8c776d; cursor: pointer; font-size: 10px; white-space: nowrap; }
-    .quick-action:hover { background: var(--accent-soft); color: var(--accent-dark); }
-    .add-button { width: 31px; height: 31px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; font-size: 19px; line-height: 1; }
-
-    .section { margin-top: 34px; scroll-margin-top: 24px; }
-    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 13px; }
-    .section-heading h2 { margin: 0; font-size: 17px; letter-spacing: -.035em; }
-    .section-heading p { margin: 0; color: #a18e84; font-size: 10px; }
-    .eyebrow { margin: 0 0 5px; color: var(--accent-dark); font-size: 9px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
-
-    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
-    .metric-card, .panel, .module-card, .entry-card {
-      border: 1px solid rgba(255,255,255,.82); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow);
-    }
-    .metric-card { min-height: 134px; padding: 17px 18px 15px; }
-    .metric-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .metric-name { color: #806f66; font-size: 11px; }
-    .metric-icon { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 9px; background: #fbede4; color: var(--accent-dark); font-size: 12px; }
-    .metric-value { margin-top: 10px; font-size: 27px; line-height: 1; font-weight: 740; letter-spacing: -.05em; }
-    .metric-value small { margin-left: 3px; color: #8b7970; font-size: 11px; font-weight: 500; letter-spacing: 0; }
-    .metric-target { margin-top: 9px; color: var(--muted); font-size: 10px; }
-    .progress-track { height: 4px; margin-top: 11px; overflow: hidden; border-radius: 99px; background: #f1e6df; }
-    .progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #e7a071, #efbe8d); }
-
-    .panel { padding: 17px 19px; }
-    .milestone-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 18px; }
-    .milestone { display: flex; gap: 9px; align-items: flex-start; padding: 12px 5px; border-bottom: 1px solid #f1e7e1; min-width: 0; }
-    .milestone:nth-last-child(-n+3) { border-bottom: 0; }
-    .milestone-dot { flex: 0 0 8px; width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--accent); }
-    .milestone-dot.pending { border: 1px solid #b8a79e; background: transparent; }
-    .milestone strong { display: block; font-size: 10px; font-weight: 650; line-height: 1.45; }
-    .milestone small { display: block; margin-top: 4px; color: #a18f86; font-size: 9px; }
-
-    .today-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 13px; }
-    .today-card { min-height: 111px; padding: 16px 17px; border: 1px solid rgba(255,255,255,.8); border-radius: 18px; background: rgba(255,255,255,.54); }
-    .today-card span { color: var(--muted); font-size: 10px; }
-    .today-card strong { display: block; margin: 11px 0 6px; font-size: 24px; letter-spacing: -.04em; }
-    .today-card small { color: #a18e84; font-size: 9px; }
-
-    .modules { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 13px; }
-    .module-card { min-height: 220px; padding: 17px 17px 15px; }
-    .module-card.featured { grid-column: span 2; background: linear-gradient(140deg, rgba(255,250,246,.98), rgba(255,244,236,.93)); }
-    .module-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-    .module-head h3 { margin: 0; font-size: 13px; letter-spacing: -.02em; }
-    .module-mark { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 9px; background: #fae9dd; color: var(--accent-dark); font-size: 12px; }
-    .module-card p { min-height: 32px; margin: 8px 0 10px; color: var(--muted); font-size: 10px; line-height: 1.5; }
-    .module-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
-    .module-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 0; border-top: 1px solid #f0e6e0; font-size: 10px; }
-    .module-list li span:last-child { color: #a18e84; font-size: 9px; white-space: nowrap; }
-    .tag { padding: 4px 7px; border-radius: 99px; background: #f8eee8; color: #987662; font-size: 8px; white-space: nowrap; }
-
-    .quick-entries { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 13px; }
-    .entry-card { display: flex; align-items: flex-start; gap: 11px; min-height: 84px; padding: 15px; transition: transform .18s ease, background .18s ease; }
-    .entry-card:hover { transform: translateY(-2px); background: #fffdfa; }
-    .entry-icon { flex: 0 0 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; background: #f8e8dd; color: var(--accent-dark); }
-    .entry-card strong { display: block; font-size: 10px; }
-    .entry-card span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; line-height: 1.45; }
-    .quickbar-bottom { display: none; }
-    .toast { position: fixed; z-index: 10; right: 22px; bottom: 20px; max-width: calc(100vw - 40px); padding: 11px 15px; border: 1px solid rgba(255,255,255,.8); border-radius: 12px; background: #3f3834; color: white; box-shadow: var(--shadow); font-size: 11px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s ease; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .footnote { margin-top: 12px; color: #a18e84; font-size: 9px; text-align: right; }
-
-    @media (max-width: 980px) {
-      .sidebar { width: 128px; left: 10px; }
-      main { width: calc(100% - 158px); margin-left: 148px; padding: 24px 20px 42px; }
-      .metrics, .today-strip { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .modules { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .module-card.featured { grid-column: span 2; }
-      .focus-card { min-width: 175px; }
-    }
-    @media (max-width: 640px) {
-      .sidebar { position: sticky; inset: 0; width: auto; height: auto; margin: 0; padding: 9px 12px; border-radius: 0; border-width: 0 0 1px; }
-      .brand { padding: 0 4px 8px; }
-      .nav-label, .sidebar-bottom, .nav-divider { display: none; }
-      .nav-list { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; }
-      .nav-link { flex: 0 0 auto; min-height: 30px; padding: 6px 8px; font-size: 10px; }
-      .nav-icon { width: auto; }
-      main { width: 100%; margin: 0; padding: 19px 16px 36px; }
-      .topline { font-size: 10px; }
-      .top-actions { gap: 9px; }
-      .hero { align-items: flex-start; margin: 24px 0 17px; }
-      .hero p { max-width: 290px; font-size: 11px; line-height: 1.5; }
-      h1 { font-size: 34px; }
-      .focus-card { display: none; }
-      .quickbar { flex-wrap: wrap; padding: 9px; }
-      .quickbar input { flex-basis: calc(100% - 50px); padding: 7px 3px; }
-      .quick-actions { order: 3; width: 100%; overflow: auto; }
-      .quick-action { flex: 1; }
-      .section { margin-top: 27px; }
-      .section-heading h2 { font-size: 15px; }
-      .section-heading p { max-width: 130px; text-align: right; line-height: 1.4; }
-      .metrics { gap: 9px; }
-      .metric-card { min-height: 123px; padding: 13px; border-radius: 17px; }
-      .metric-value { font-size: 24px; }
-      .milestone-grid { grid-template-columns: 1fr; }
-      .milestone:nth-last-child(-n+3) { border-bottom: 1px solid #f1e7e1; }
-      .milestone:last-child { border-bottom: 0; }
-      .today-strip { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
-      .today-card { min-height: 96px; padding: 13px; }
-      .today-card strong { font-size: 21px; }
-      .modules { grid-template-columns: 1fr; gap: 10px; }
-      .module-card, .module-card.featured { grid-column: auto; min-height: 0; }
-      .module-card p { min-height: auto; }
-      .quick-entries { grid-template-columns: 1fr; gap: 9px; }
-      .entry-card { min-height: 68px; }
-      .footnote { text-align: left; }
-    }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102b3f">
+<title>Personal Workbench — Lâm</title>
+<style>
+:root{color-scheme:light;--bg:#edf4f2;--paper:#f7faf8;--card:#fff;--ink:#173347;--muted:#708795;--line:#dce9e5;--navy:#102b3f;--mint:#51c6a5;--mint-dark:#178b73;--mint-soft:#ddf5ec;--lilac:#eee9ff;--sky:#e4f2fa;--amber:#fff1d9;--shadow:0 14px 38px #18384b0d;--radius:22px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 78% 0%,#fff 0,transparent 35%),linear-gradient(145deg,#f4f8f6,#eaf3f1);color:var(--ink)}button,input{font:inherit}button{color:inherit}a{color:inherit;text-decoration:none}.shell{min-height:100vh}.sidebar{position:fixed;z-index:5;inset:16px auto 16px 16px;width:230px;padding:22px 14px;border:1px solid #ffffffb8;border-radius:26px;background:#fafffbea;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:auto;backdrop-filter:blur(18px)}.brand{display:flex;align-items:center;gap:10px;padding:2px 10px 25px;font-size:15px;font-weight:800;letter-spacing:-.04em}.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:var(--navy);color:var(--mint);font-size:17px}.nav-label{padding:14px 11px 8px;color:#96a8ae;text-transform:uppercase;letter-spacing:.12em;font-size:9px;font-weight:800}.nav-list{display:grid;gap:5px}.nav-link{display:flex;align-items:center;gap:11px;min-height:42px;padding:9px 11px;border-radius:13px;color:#607a87;font-size:12px;font-weight:600;transition:.18s}.nav-link:hover,.nav-link.active{background:var(--mint-soft);color:var(--mint-dark)}.nav-icon{width:18px;text-align:center;font-size:15px}.divider{height:1px;margin:13px 7px 4px;background:var(--line)}.side-bottom{margin-top:auto;padding:16px 10px 3px;color:#83959e;font-size:10px;line-height:1.6}.profile{display:flex;align-items:center;gap:10px;padding:12px 9px;border-top:1px solid var(--line);font-size:11px;font-weight:700;color:var(--ink)}.avatar-small{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--mint-soft);color:var(--mint-dark);font-weight:800}
+main{width:min(1250px,calc(100% - 286px));margin:0 auto 0 max(270px,calc((100% - 1250px)/2 + 245px));padding:30px 32px 60px}.topline{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:11px}.top-actions{display:flex;align-items:center;gap:15px}.icon-button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:11px}.avatar{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:var(--navy);font-size:11px;font-weight:800;color:white}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:35px 0 25px}.eyebrow{margin:0 0 7px;color:var(--mint-dark);font-size:9px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}h1{margin:0;font-size:clamp(34px,5vw,51px);line-height:1.06;letter-spacing:-.06em;font-weight:780}.hero p:last-child{margin:11px 0 0;color:var(--muted);font-size:13px}.focus-card{min-width:220px;padding:16px 19px;border:1px solid #fff;border-radius:18px;background:#ffffffb8}.focus-card strong{display:block;font-size:13px}.focus-card span{display:block;margin-top:6px;color:var(--muted);font-size:10px}.quickbar{display:flex;align-items:center;gap:9px;padding:9px 10px 9px 17px;border:1px solid #fff;border-radius:17px;background:#ffffffc7;box-shadow:0 7px 24px #17334708}.quickbar input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:var(--ink);font-size:12px}.quickbar input::placeholder{color:#91a2a9}.quick-actions{display:flex;gap:5px}.quick-action{border:0;border-radius:10px;background:transparent;padding:9px 10px;color:#64808a;cursor:pointer;font-size:10px;white-space:nowrap}.quick-action:hover{background:var(--mint-soft);color:var(--mint-dark)}.add-button{width:34px;height:34px;border:0;border-radius:11px;background:var(--navy);color:var(--mint);cursor:pointer;font-size:20px;line-height:1}.section{margin-top:36px;scroll-margin-top:24px}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:14px}.section-heading h2{margin:0;font-size:18px;letter-spacing:-.04em}.section-heading>p{margin:0;color:#94a4a9;font-size:10px}.metrics,.today-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card{border:1px solid #ffffffd9;border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)}.metric{min-height:140px;padding:18px}.metric-top{display:flex;align-items:center;justify-content:space-between}.metric-name{color:#708591;font-size:11px}.metric-icon,.module-mark,.entry-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:10px;background:var(--mint-soft);color:var(--mint-dark);font-size:13px}.metric:nth-child(2) .metric-icon{background:var(--sky);color:#397b9e}.metric:nth-child(3) .metric-icon{background:var(--amber);color:#b07822}.metric:nth-child(4) .metric-icon{background:var(--lilac);color:#7564b3}.metric-value{margin-top:13px;font-size:29px;line-height:1;font-weight:780;letter-spacing:-.06em}.metric-value small{margin-left:4px;color:#80929a;font-size:11px;font-weight:500;letter-spacing:0}.metric-target{margin-top:9px;color:var(--muted);font-size:10px}.track{height:5px;margin-top:12px;overflow:hidden;border-radius:99px;background:#edf2f0}.track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#38b990,#75dec1)}.panel{padding:17px 20px}.milestone-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px}.milestone{display:flex;gap:10px;align-items:flex-start;padding:12px 5px;border-bottom:1px solid #edf2f0;min-width:0}.milestone:nth-last-child(-n+3){border-bottom:0}.dot{flex:0 0 9px;width:9px;height:9px;margin-top:4px;border-radius:50%;background:var(--mint)}.dot.pending{border:1px solid #a8b6b9;background:transparent}.milestone strong{display:block;font-size:10px;font-weight:680;line-height:1.45}.milestone small{display:block;margin-top:4px;color:#99a9ad;font-size:9px}.today-card{min-height:112px;padding:16px 17px;background:#ffffffa8}.today-card span{color:var(--muted);font-size:10px}.today-card strong{display:block;margin:11px 0 6px;font-size:24px;letter-spacing:-.05em}.today-card small{color:#91a2a8;font-size:9px}.modules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.module-card{min-height:220px;padding:18px}.module-card.featured{grid-column:span 2;background:linear-gradient(145deg,#fff,#e8faf3)}.module-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.module-head h3{margin:0;font-size:14px;letter-spacing:-.025em}.module-card p{min-height:34px;margin:9px 0 11px;color:var(--muted);font-size:10px;line-height:1.55}.module-list{display:grid;gap:6px;margin:0;padding:0;list-style:none}.module-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid #edf2f0;font-size:10px}.module-list li span:last-child{color:#91a1a7;font-size:9px;white-space:nowrap}.tag{padding:4px 8px;border-radius:99px;background:#edf7f3;color:#458471;font-size:8px;white-space:nowrap}.entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.entry{display:flex;align-items:flex-start;gap:11px;min-height:84px;padding:15px;transition:transform .18s,background .18s}.entry:hover{transform:translateY(-2px);background:#fafffd}.entry-icon{flex:0 0 31px;height:31px;background:var(--sky);color:#397b9e}.entry:nth-child(2) .entry-icon{background:var(--lilac);color:#7564b3}.entry strong{display:block;font-size:10px}.entry span:not(.entry-icon){display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.footnote{margin-top:12px;color:#9aa9ad;font-size:9px;text-align:right}.toast{position:fixed;z-index:10;right:22px;bottom:20px;max-width:calc(100vw - 40px);padding:12px 16px;border:1px solid #ffffff55;border-radius:13px;background:var(--navy);color:#fff;box-shadow:var(--shadow);font-size:11px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1050px){.sidebar{width:190px}.sidebar .nav-link{font-size:11px}main{width:calc(100% - 225px);margin-left:210px;padding:25px 20px 45px}.metrics,.today-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.modules{grid-template-columns:repeat(2,minmax(0,1fr))}.focus-card{min-width:180px}}
+@media(max-width:650px){.sidebar{position:sticky;inset:0;width:auto;height:auto;margin:0;padding:10px 12px;border-radius:0;border-width:0 0 1px}.brand{padding:0 4px 8px}.nav-label,.side-bottom,.divider,.profile{display:none}.nav-list{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}.nav-link{flex:0 0 auto;min-height:33px;padding:7px 9px;font-size:10px}.nav-icon{width:auto}main{width:100%;margin:0;padding:19px 15px 36px}.topline{font-size:10px}.top-actions{gap:9px}.hero{align-items:flex-start;margin:24px 0 18px}h1{font-size:34px}.hero p:last-child{max-width:290px;font-size:11px;line-height:1.5}.focus-card{display:none}.quickbar{flex-wrap:wrap;padding:9px}.quickbar input{flex-basis:calc(100% - 50px);padding:7px 3px}.quick-actions{order:3;width:100%;overflow:auto}.quick-action{flex:1}.section{margin-top:28px}.section-heading h2{font-size:15px}.section-heading>p{max-width:130px;text-align:right;line-height:1.4}.metrics,.today-strip{gap:9px}.metric{min-height:125px;padding:13px;border-radius:17px}.metric-value{font-size:25px}.milestone-grid{grid-template-columns:1fr}.milestone:nth-last-child(-n+3){border-bottom:1px solid #edf2f0}.milestone:last-child{border-bottom:0}.today-card{min-height:96px;padding:13px}.today-card strong{font-size:21px}.modules{grid-template-columns:1fr;gap:10px}.module-card,.module-card.featured{grid-column:auto;min-height:0}.module-card p{min-height:auto}.entries{grid-template-columns:1fr;gap:9px}.entry{min-height:68px}.footnote{text-align:left}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Main navigation">
-      <div class="brand"><span class="brand-mark">✦</span>Workbench</div>
-      <div class="nav-label">Workspace</div>
-      <nav class="nav-list" aria-label="Workspace navigation">
-        <a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
-        <a class="nav-link" href="#today"><span class="nav-icon">◷</span>Today</a>
-        <a class="nav-link" href="#tasks"><span class="nav-icon">☷</span>My Tasks</a>
-        <a class="nav-link" href="#study"><span class="nav-icon">✎</span>Study Planner</a>
-      </nav>
-      <div class="nav-divider"></div>
-      <div class="nav-label">Tools & Resources</div>
-      <nav class="nav-list" aria-label="Tools and resources">
-        <a class="nav-link" href="#ai-workspace"><span class="nav-icon">✧</span>AI Workspace</a>
-        <a class="nav-link" href="#documents"><span class="nav-icon">▤</span>Documents</a>
-        <a class="nav-link" href="#knowledge"><span class="nav-icon">◇</span>Knowledge Base</a>
-        <a class="nav-link" href="#settings"><span class="nav-icon">⚙</span>Settings</a>
-      </nav>
-      <div class="sidebar-bottom"><span class="profile-dot">K</span><br />Personal workspace<br />for Khoi</div>
-    </aside>
-
-    <main id="overview">
-      <div class="topline">
-        <span id="today-date">Tuesday, October 27</span>
-        <div class="top-actions">
-          <button class="icon-button" type="button" data-toast="Search will be available soon.">Search</button>
-          <button class="icon-button" type="button" data-toast="You have no new notifications.">Notifications</button>
-          <span class="avatar" aria-label="Khoi">K</span>
-        </div>
-      </div>
-
-      <header class="hero">
-        <div>
-          <p class="eyebrow">Personal Workbench</p>
-          <h1>Good evening, Khoi.</h1>
-          <p>Ready to learn, organize your work, and get things done today?</p>
-        </div>
-        <div class="focus-card">
-          <strong>Khoi's workspace</strong>
-          <span>Learning · Work · AI</span>
-        </div>
-      </header>
-
-      <form class="quickbar" id="capture-form">
-        <input id="capture-input" type="text" aria-label="Quick capture" placeholder="Quick capture: add a task, an idea, or a note…" />
-        <div class="quick-actions" aria-label="Quick actions">
-          <button class="quick-action" type="button" data-mode="ask">Ask AI</button>
-          <button class="quick-action" type="button" data-mode="task">Create Task</button>
-          <button class="quick-action" type="button" data-mode="note">Add Note</button>
-        </div>
-        <button class="add-button" type="submit" aria-label="Save quick entry">+</button>
-      </form>
-
-      <section class="section" id="progress">
-        <div class="section-heading">
-          <div><p class="eyebrow">Your progress</p><h2>Achievements</h2></div>
-          <p>Demo data · editable</p>
-        </div>
-        <div class="metrics">
-          <article class="metric-card">
-            <div class="metric-top"><span class="metric-name">Study Progress</span><span class="metric-icon">◒</span></div>
-            <div class="metric-value">60<small>%</small></div>
-            <div class="metric-target">Today's target: 100%</div>
-            <div class="progress-track"><span style="width:60%"></span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span class="metric-name">Tasks Completed</span><span class="metric-icon">✓</span></div>
-            <div class="metric-value">3<small>/ 5 tasks</small></div>
-            <div class="metric-target">2 tasks left to reach today's target</div>
-            <div class="progress-track"><span style="width:60%"></span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span class="metric-name">Learning Time</span><span class="metric-icon">◷</span></div>
-            <div class="metric-value">2<small>hours</small></div>
-            <div class="metric-target">Today's target: 3 hours</div>
-            <div class="progress-track"><span style="width:67%"></span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-top"><span class="metric-name">AI Productivity</span><span class="metric-icon">✧</span></div>
-            <div class="metric-value">4<small>/ 5 tasks</small></div>
-            <div class="metric-target">Tasks supported by AI today</div>
-            <div class="progress-track"><span style="width:80%"></span></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" aria-label="Study milestones">
-        <div class="panel milestone-grid">
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>Finish an assignment in progress</strong><small>Today's priority</small></div></div>
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>Review what you've learned</strong><small>Study Planner</small></div></div>
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>Try AI Research for a lesson</strong><small>AI Workspace</small></div></div>
-          <div class="milestone"><span class="milestone-dot pending"></span><div><strong>Plan for upcoming exams</strong><small>Not started</small></div></div>
-          <div class="milestone"><span class="milestone-dot pending"></span><div><strong>Update your task list</strong><small>Not started</small></div></div>
-          <div class="milestone"><span class="milestone-dot pending"></span><div><strong>Save a new study note</strong><small>Not started</small></div></div>
-        </div>
-      </section>
-
-      <section class="section" id="today">
-        <div class="section-heading"><div><p class="eyebrow">Daily focus</p><h2>Today</h2></div><p>Track your personal progress</p></div>
-        <div class="today-strip">
-          <article class="today-card"><span>Learning Time</span><strong>2 hours</strong><small>Target: 3 hours</small></article>
-          <article class="today-card"><span>Tasks Completed</span><strong>3 tasks</strong><small>2 tasks left to target</small></article>
-          <article class="today-card"><span>AI-Assisted Tasks</span><strong>4 tasks</strong><small>Target: 5 tasks</small></article>
-          <article class="today-card"><span>Study Progress</span><strong>60%</strong><small>Keep going to reach your target</small></article>
-        </div>
-      </section>
-
-      <section class="section" id="tasks">
-        <div class="section-heading"><div><p class="eyebrow">Learning · Work · Tools</p><h2>Your Workspace</h2></div><p>Three key modules</p></div>
-        <div class="modules">
-          <article class="module-card" id="study">
-            <div class="module-head"><h3>Study Planner</h3><span class="module-mark">✎</span></div>
-            <p>Organize your study schedule and academic priorities.</p>
-            <ul class="module-list"><li><span>Assignments</span><span class="tag">Track</span></li><li><span>Exams</span><span class="tag">Plan</span></li><li><span>Study Schedule</span><span class="tag">Organize</span></li></ul>
-          </article>
-          <article class="module-card featured" id="ai-workspace">
-            <div class="module-head"><div><p class="eyebrow">Top priority</p><h3>AI Workspace</h3></div><span class="module-mark">✧</span></div>
-            <p>Use AI to research, create content, and automate repetitive tasks.</p>
-            <ul class="module-list"><li><span>AI Research</span><span class="tag">Research</span></li><li><span>Content Creation</span><span class="tag">Write & edit</span></li><li><span>Workflow Automation</span><span class="tag">Save time</span></li></ul>
-          </article>
-          <article class="module-card">
-            <div class="module-head"><h3>Task Manager</h3><span class="module-mark">✓</span></div>
-            <p>Manage daily tasks, deadlines, and personal projects.</p>
-            <ul class="module-list"><li><span>To-do List</span><span class="tag">Today</span></li><li><span>Deadlines</span><span class="tag">Track</span></li><li><span>Project Progress</span><span class="tag">Update</span></li></ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="documents">
-        <div class="section-heading"><div><p class="eyebrow">Quick access</p><h2>Start Here</h2></div><p>Your frequently used resources</p></div>
-        <div class="quick-entries">
-          <a class="entry-card" href="#knowledge"><span class="entry-icon">▤</span><div><strong>My Documents</strong><span>Open study notes, assignments, and important files.</span></div></a>
-          <a class="entry-card" href="#ai-workspace"><span class="entry-icon">✧</span><div><strong>AI Tools</strong><span>Explore AI tools for more efficient study and work.</span></div></a>
-          <a class="entry-card" href="#activity"><span class="entry-icon">◷</span><div><strong>Recent Activity</strong><span>Review completed tasks and recently updated documents.</span></div></a>
-        </div>
-      </section>
-
-      <section class="section" id="knowledge">
-        <div class="section-heading"><div><p class="eyebrow">Save it for later</p><h2>Knowledge & Notes</h2></div><p id="activity">Ideas, documents, and things to remember</p></div>
-        <div class="panel milestone-grid">
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>Study Notes</strong><small>Collect lessons and key takeaways</small></div></div>
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>New Ideas</strong><small>Capture them to revisit later</small></div></div>
-          <div class="milestone"><span class="milestone-dot"></span><div><strong>Follow-ups</strong><small>Turn notes into action</small></div></div>
-        </div>
-        <p class="footnote">Metrics shown are illustrative demo values, not real user data.</p>
-      </section>
-      <div id="settings" aria-hidden="true"></div>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script>
-    const toast = document.getElementById('toast');
-    let toastTimer;
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
-    }
-
-    document.querySelectorAll('[data-toast]').forEach((button) => {
-      button.addEventListener('click', () => showToast(button.dataset.toast));
-    });
-
-    const captureInput = document.getElementById('capture-input');
-    document.querySelectorAll('[data-mode]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const mode = button.dataset.mode;
-        const prompts = {
-          ask: 'Ask AI: ',
-          task: 'Task: ',
-          note: 'Note: '
-        };
-        captureInput.value = prompts[mode] + captureInput.value.replace(/^(Ask AI: |Task: |Note: )/, '');
-        captureInput.focus();
-      });
-    });
-
-    document.getElementById('capture-form').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const value = captureInput.value.trim();
-      if (!value) {
-        captureInput.focus();
-        showToast('Enter a task, note, or question first.');
-        return;
-      }
-      const entries = JSON.parse(localStorage.getItem('khoi-workbench-captures') || '[]');
-      entries.unshift({ text: value, createdAt: new Date().toISOString() });
-      localStorage.setItem('khoi-workbench-captures', JSON.stringify(entries.slice(0, 30)));
-      captureInput.value = '';
-      showToast('Saved to quick capture on this device.');
-    });
-
-    const navLinks = [...document.querySelectorAll('.nav-link')];
-    navLinks.forEach((link) => link.addEventListener('click', () => {
-      navLinks.forEach((item) => item.classList.remove('active'));
-      link.classList.add('active');
-    }));
-  </script>
+<div class="shell">
+<aside class="sidebar" aria-label="Điều hướng chính">
+<div class="brand"><span class="brand-mark">✦</span>Workbench</div>
+<div class="nav-label">Không gian làm việc</div>
+<nav class="nav-list" aria-label="Điều hướng không gian">
+<a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span>Tổng quan</a><a class="nav-link" href="#today"><span class="nav-icon">◷</span>Hôm nay</a><a class="nav-link" href="#tasks"><span class="nav-icon">☷</span>Công việc</a><a class="nav-link" href="#study"><span class="nav-icon">✎</span>Kế hoạch học</a></nav>
+<div class="divider"></div><div class="nav-label">Công cụ & tài nguyên</div><nav class="nav-list" aria-label="Công cụ và tài nguyên"><a class="nav-link" href="#ai-workspace"><span class="nav-icon">✧</span>Không gian AI</a><a class="nav-link" href="#documents"><span class="nav-icon">▤</span>Tài liệu</a><a class="nav-link" href="#knowledge"><span class="nav-icon">◇</span>Ghi chú</a><a class="nav-link" href="#settings"><span class="nav-icon">⚙</span>Cài đặt</a></nav>
+<div class="side-bottom">Một góc nhỏ để học tập,<br>làm việc và phát triển mỗi ngày.</div><div class="profile"><span class="avatar-small">L</span><span>Lâm</span></div></aside>
+<main id="overview">
+<div class="topline"><span id="today-date"></span><div class="top-actions"><button class="icon-button" type="button" data-toast="Tìm kiếm sẽ sớm có mặt.">⌕ Tìm kiếm</button><button class="icon-button" type="button" data-toast="Bạn không có thông báo mới.">♧ Thông báo</button><span class="avatar" aria-label="Lâm">L</span></div></div>
+<header class="hero"><div><p class="eyebrow">Personal Workbench</p><h1 id="greeting">Good evening, Lâm.</h1><p>Sẵn sàng học tập, sắp xếp công việc và hoàn thành mục tiêu hôm nay?</p></div><div class="focus-card"><strong>Không gian của Lâm</strong><span>Học tập · Công việc · AI</span></div></header>
+<form class="quickbar" id="capture-form"><input id="capture-input" type="text" aria-label="Ghi nhanh" placeholder="Ghi nhanh một việc cần làm, ý tưởng hoặc ghi chú…"><div class="quick-actions" aria-label="Thao tác nhanh"><button class="quick-action" type="button" data-mode="ask">Hỏi AI</button><button class="quick-action" type="button" data-mode="task">Tạo công việc</button><button class="quick-action" type="button" data-mode="note">Thêm ghi chú</button></div><button class="add-button" type="submit" aria-label="Lưu mục ghi nhanh">+</button></form>
+<section class="section" id="progress"><div class="section-heading"><div><p class="eyebrow">Tiến độ của bạn</p><h2>Thành quả hôm nay</h2></div><p>Số liệu minh họa · có thể chỉnh sửa</p></div><div class="metrics">
+<article class="card metric"><div class="metric-top"><span class="metric-name">Tiến độ học tập</span><span class="metric-icon">◒</span></div><div class="metric-value">60<small>%</small></div><div class="metric-target">Mục tiêu hôm nay: 100%</div><div class="track"><span style="width:60%"></span></div></article>
+<article class="card metric"><div class="metric-top"><span class="metric-name">Công việc hoàn thành</span><span class="metric-icon">✓</span></div><div class="metric-value">3<small>/ 5 việc</small></div><div class="metric-target">Còn 2 việc để đạt mục tiêu</div><div class="track"><span style="width:60%"></span></div></article>
+<article class="card metric"><div class="metric-top"><span class="metric-name">Thời gian học</span><span class="metric-icon">◷</span></div><div class="metric-value">2<small>giờ</small></div><div class="metric-target">Mục tiêu hôm nay: 3 giờ</div><div class="track"><span style="width:67%"></span></div></article>
+<article class="card metric"><div class="metric-top"><span class="metric-name">Năng suất với AI</span><span class="metric-icon">✧</span></div><div class="metric-value">4<small>/ 5 việc</small></div><div class="metric-target">Công việc có AI hỗ trợ hôm nay</div><div class="track"><span style="width:80%"></span></div></article></div></section>
+<section class="section" aria-label="Các cột mốc học tập"><div class="card panel milestone-grid"><div class="milestone"><span class="dot"></span><div><strong>Hoàn thành bài tập đang làm</strong><small>Ưu tiên hôm nay</small></div></div><div class="milestone"><span class="dot"></span><div><strong>Ôn lại nội dung đã học</strong><small>Kế hoạch học tập</small></div></div><div class="milestone"><span class="dot"></span><div><strong>Thử dùng AI nghiên cứu bài học</strong><small>Không gian AI</small></div></div><div class="milestone"><span class="dot pending"></span><div><strong>Lên kế hoạch cho kỳ thi sắp tới</strong><small>Chưa bắt đầu</small></div></div><div class="milestone"><span class="dot pending"></span><div><strong>Cập nhật danh sách công việc</strong><small>Chưa bắt đầu</small></div></div><div class="milestone"><span class="dot pending"></span><div><strong>Lưu ghi chú học tập mới</strong><small>Chưa bắt đầu</small></div></div></div></section>
+<section class="section" id="today"><div class="section-heading"><div><p class="eyebrow">Tập trung mỗi ngày</p><h2>Hôm nay</h2></div><p>Theo dõi tiến độ cá nhân</p></div><div class="today-strip"><article class="card today-card"><span>Thời gian học</span><strong>2 giờ</strong><small>Mục tiêu: 3 giờ</small></article><article class="card today-card"><span>Công việc hoàn thành</span><strong>3 việc</strong><small>Còn 2 việc để đạt mục tiêu</small></article><article class="card today-card"><span>Việc có AI hỗ trợ</span><strong>4 việc</strong><small>Mục tiêu: 5 việc</small></article><article class="card today-card"><span>Tiến độ học tập</span><strong>60%</strong><small>Cố lên để đạt mục tiêu nhé</small></article></div></section>
+<section class="section" id="tasks"><div class="section-heading"><div><p class="eyebrow">Học tập · Công việc · Công cụ</p><h2>Không gian của bạn</h2></div><p>Các khu vực chính</p></div><div class="modules">
+<article class="card module-card" id="study"><div class="module-head"><h3>Kế hoạch học tập</h3><span class="module-mark">✎</span></div><p>Sắp xếp lịch học và các ưu tiên học tập của bạn.</p><ul class="module-list"><li><span>Bài tập</span><span class="tag">Theo dõi</span></li><li><span>Kỳ thi</span><span class="tag">Lên kế hoạch</span></li><li><span>Lịch học</span><span class="tag">Sắp xếp</span></li></ul></article>
+<article class="card module-card featured" id="ai-workspace"><div class="module-head"><div><p class="eyebrow">Ưu tiên hàng đầu</p><h3>Không gian AI</h3></div><span class="module-mark">✧</span></div><p>Dùng AI để nghiên cứu, sáng tạo nội dung và tự động hóa việc lặp lại.</p><ul class="module-list"><li><span>Nghiên cứu cùng AI</span><span class="tag">Khám phá</span></li><li><span>Sáng tạo nội dung</span><span class="tag">Viết & sửa</span></li><li><span>Tự động hóa quy trình</span><span class="tag">Tiết kiệm thời gian</span></li></ul></article>
+<article class="card module-card"><div class="module-head"><h3>Quản lý công việc</h3><span class="module-mark">✓</span></div><p>Quản lý việc cần làm, hạn chót và dự án cá nhân.</p><ul class="module-list"><li><span>Danh sách việc cần làm</span><span class="tag">Hôm nay</span></li><li><span>Hạn chót</span><span class="tag">Theo dõi</span></li><li><span>Tiến độ dự án</span><span class="tag">Cập nhật</span></li></ul></article></div></section>
+<section class="section" id="documents"><div class="section-heading"><div><p class="eyebrow">Truy cập nhanh</p><h2>Bắt đầu tại đây</h2></div><p>Tài nguyên bạn thường dùng</p></div><div class="entries"><a class="card entry" href="#knowledge"><span class="entry-icon">▤</span><div><strong>Tài liệu của tôi</strong><span>Mở ghi chú học tập, bài tập và những tệp quan trọng.</span></div></a><a class="card entry" href="#ai-workspace"><span class="entry-icon">✧</span><div><strong>Công cụ AI</strong><span>Khám phá công cụ giúp học tập và làm việc hiệu quả hơn.</span></div></a><a class="card entry" href="#activity"><span class="entry-icon">◷</span><div><strong>Hoạt động gần đây</strong><span>Xem công việc đã xong và tài liệu vừa cập nhật.</span></div></a></div></section>
+<section class="section" id="knowledge"><div class="section-heading"><div><p class="eyebrow">Lưu lại để xem sau</p><h2>Kiến thức & ghi chú</h2></div><p id="activity">Ý tưởng, tài liệu và điều cần nhớ</p></div><div class="card panel milestone-grid"><div class="milestone"><span class="dot"></span><div><strong>Ghi chú học tập</strong><small>Lưu bài học và ý chính</small></div></div><div class="milestone"><span class="dot"></span><div><strong>Ý tưởng mới</strong><small>Ghi lại để xem sau</small></div></div><div class="milestone"><span class="dot"></span><div><strong>Việc cần theo dõi</strong><small>Biến ghi chú thành hành động</small></div></div></div><p class="footnote">Các chỉ số chỉ mang tính minh họa, chưa phải dữ liệu theo dõi thực tế.</p></section><div id="settings" aria-hidden="true"></div>
+</main></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const toast=document.getElementById('toast');let toastTimer;function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)}
+document.querySelectorAll('[data-toast]').forEach(button=>button.addEventListener('click',()=>showToast(button.dataset.toast)));
+const captureInput=document.getElementById('capture-input');document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const mode=button.dataset.mode;const prompts={ask:'Hỏi AI: ',task:'Công việc: ',note:'Ghi chú: '};captureInput.value=prompts[mode]+captureInput.value.replace(/^(Hỏi AI: |Công việc: |Ghi chú: )/,'');captureInput.focus()}));
+document.getElementById('capture-form').addEventListener('submit',event=>{event.preventDefault();const value=captureInput.value.trim();if(!value){captureInput.focus();showToast('Hãy nhập công việc, ghi chú hoặc câu hỏi trước nhé.');return}const entries=JSON.parse(localStorage.getItem('nguyenduclam-workbench-captures')||'[]');entries.unshift({text:value,createdAt:new Date().toISOString()});localStorage.setItem('nguyenduclam-workbench-captures',JSON.stringify(entries.slice(0,30)));captureInput.value='';showToast('Đã lưu mục ghi nhanh trên thiết bị này.')});
+const navLinks=[...document.querySelectorAll('.nav-link')];navLinks.forEach(link=>link.addEventListener('click',()=>{navLinks.forEach(item=>item.classList.remove('active'));link.classList.add('active')}));
+const now=new Date();document.getElementById('today-date').textContent=new Intl.DateTimeFormat('vi-VN',{weekday:'long',day:'numeric',month:'long'}).format(now);document.getElementById('greeting').textContent='Good evening, Lâm.';
+</script>
 </body>
 </html>
+
+
+
+
